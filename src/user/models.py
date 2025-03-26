@@ -9,6 +9,6 @@ class Profile(models.Model):
     image = models.ImageField(upload_to='', null=True, blank=True)
 
     def __str__(self):
-        return self.first_name
+        return "%s %s" % (self.first_name, self.last_name)
 
 
