@@ -52,8 +52,13 @@
                         <a class="google" href="#"><i class="lni-google-plus"></i></a>
                     </div>
                     <div class="header-top-right float-right">
-                        <a href="login.html" class="header-top-button"><i class="lni-lock"></i> Log In</a> |
+                        {% if user.is_authenticated %}
+                        <a href class="header-top-button"><i class="lni-lock"></i>{{ user.firstname }}</a> |
+                        <a href="{% url 'logout' %}" class="header-top-button"><i class="lni-logout"></i> Log Out</a>
+                        {% else %}
+                        <a href="{% url 'login'%}" class="header-top-button"><i class="lni-lock"></i> Log In</a> |
                         <a href="register.html" class="header-top-button"><i class="lni-pencil"></i> Register</a>
+                        {% endif  %}
                     </div>
                 </div>
             </div>
