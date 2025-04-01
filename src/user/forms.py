@@ -25,10 +25,6 @@ class RegisterForm(UserCreationForm):
         }
 
 
-
-
-
-
     def save(self, commit=True):
         user = super().save()
         if user:

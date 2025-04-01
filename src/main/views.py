@@ -14,3 +14,21 @@ def main(request):
         "locations": locations
     }
     return render(request, 'index.html', ctx)
+
+def about(request):
+    ctx = {
+
+    }
+    return render(request, 'about.html', ctx)
+
+def services(request):
+    ctx = {
+
+    }
+    return render(request, 'services.html', ctx)
+
+def contact(request):
+    ctx = {
+
+    }
+    return render(request, 'contact.html', ctx)
