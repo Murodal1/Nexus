@@ -1,54 +1,56 @@
 {% extends 'base.html' %}
+
 {% block header %}
 <div id="hero-area">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-12 col-lg-9 col-xs-12 text-center">
-                    <div class="contents">
-                        <h1 class="head-title">Welcome to The Largest <span class="year">Marketplace</span></h1>
-                        <p>Buy and sell everything from used cars to mobile phones and computers, or search for
-                            property, jobs and more</p>
-                        <div class="search-bar">
-                            <div class="search-inner">
-                                <form class="search-form">
-                                    <div class="form-group">
-                                        <input type="text" name="customword" class="form-control"
-                                               placeholder="What are you looking for?">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12 col-lg-9 col-xs-12 text-center">
+                <div class="contents">
+                    <h1 class="head-title">Welcome to The Largest <span class="year">Marketplace</span></h1>
+                    <p>Buy and sell everything from used cars to mobile phones and computers, or search for
+                        property, jobs and more</p>
+                    <div class="search-bar">
+                        <div class="search-inner">
+                            <form class="search-form">
+                                <div class="form-group">
+                                    <input type="text" name="customword" class="form-control"
+                                           placeholder="What are you looking for?">
+                                </div>
+                                <div class="form-group inputwithicon">
+                                    <div class="select">
+                                        <select>
+                                            <option value="none">Locations</option>
+                                            {% for lct in locations %}
+                                            <option value="none" style="color: black">{{ lct.name }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
-                                    <div class="form-group inputwithicon">
-                                        <div class="select">
-                                            <select>
-                                                <option value="none">Locations</option>
-                                                {% for lct in locations %}
-                                                    <option value="none" style="color: black">{{ lct.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <i class="lni-target"></i>
+                                    <i class="lni-target"></i>
+                                </div>
+                                <div class="form-group inputwithicon">
+                                    <div class="select">
+                                        <select>
+                                            <option value="none">Select Catagory</option>
+                                            {% for ctg in categories %}
+                                            <option value="none" style="color: black">{{ ctg.name }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
-                                    <div class="form-group inputwithicon">
-                                        <div class="select">
-                                            <select>
-                                                <option value="none">Select Catagory</option>
-                                                {% for ctg in categories %}
-                                                    <option value="none" style="color: black">{{ ctg.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <i class="lni-menu"></i>
-                                    </div>
-                                    <button class="btn btn-common" type="button"><i class="lni-search"></i> Search Now
-                                    </button>
-                                </form>
-                            </div>
+                                    <i class="lni-menu"></i>
+                                </div>
+                                <button class="btn btn-common" type="button"><i class="lni-search"></i> Search Now
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock header %}
+
 {% block content %}
 <section id="categories">
     <div class="container">
@@ -56,18 +58,18 @@
             <div class="col-lg-10 col-md-12 col-xs-12">
                 <div id="categories-icon-slider" class="categories-wrapper owl-carousel owl-theme">
                     {% for ctg in categories %}
-                        <div class="item">
-                            <a href="category.html">
-                                <div class="category-icon-item">
-                                    <div class="icon-box">
-                                        <div class="icon">
-                                            <img src="/images/{{ ctg.image }}" alt="">
-                                        </div>
-                                        <h4>{{ ctg.name }}</h4>
+                    <div class="item">
+                        <a href="{% url 'product-list' %}">
+                            <div class="category-icon-item">
+                                <div class="icon-box">
+                                    <div class="icon">
+                                        <img src="/images/{{ ctg.image }}" alt="">
                                     </div>
+                                    <h4>{{ ctg.name }}</h4>
                                 </div>
-                            </a>
-                        </div>
+                            </div>
+                        </a>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
@@ -81,8 +83,8 @@
         <h1 class="section-title">Latest Products</h1>
         <div class="row">
             {% for product in products %}
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4">
-                    <div class="featured-box">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4">
+                <div class="featured-box">
                     <figure>
                         <div class="icon">
                             <span class="bg-green"><i class="lni-heart"></i></span>
@@ -109,11 +111,12 @@
                         <p class="dsc">{{ product.description|slice:'200'}} ...</p>
                         <div class="listing-bottom">
                             <h3 class="price float-left">${{ product.price }}</h3>
-                            <a href="{% url 'product-detail' pk=product.id %}" class="btn btn-common float-right">View Details</a>
+                            <a href="{% url 'product-detail' pk=product.id %}" class="btn btn-common float-right">View
+                                Details</a>
                         </div>
                     </div>
                 </div>
-                </div>
+            </div>
             {% endfor %}
         </div>
     </div>

@@ -25,13 +25,13 @@
             <div class="col-lg-8 col-md-12 col-xs-12">
                 <div class="ads-details-wrapper">
                     <div id="owl-demo" class="owl-carousel owl-theme">
-                        {% for img in products %}
+                        {% for img in product.images.all %}
                             <div class="item">
-                            <div class="product-img">
-                                <img class="img-fluid" src="/images/{{ img.main_images.0.image }}" alt="">
+                                <div class="product-img">
+                                    <img class="img-fluid" style="width: 100%" src="{{ img.image.url }}" alt="">
+                                </div>
+                                <span class="price">${{ product.price }}</span>
                             </div>
-                            <span class="price">${{ img.price }}</span>
-                        </div>
                         {% endfor %}
                     </div>
                 </div>
@@ -94,7 +94,7 @@
 
                 <aside class="details-sidebar">
                     <div class="widget">
-                        {% for profile in profiles %}
+<!--                        {% for profile in profiles %}-->
                         <h4 class="widget-title">Ad Posted By</h4>
                         <div class="agent-inner">
                             <div class="agent-title">
@@ -111,7 +111,7 @@
                             <p>I'm interested in this property [ID 123456] and I'd like to know more details.</p>
                             <button class="btn btn-common fullwidth mt-4">Send Message</button>
                         </div>
-                        {% endfor %}
+<!--                        {% endfor %}-->
                     </div>
 
                     <div class="widget">

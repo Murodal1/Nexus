@@ -27,13 +27,15 @@ def product_detail(request, pk):
     products = Product.objects.prefetch_related(
         Prefetch('images', queryset=ProductImage.objects.filter(pk=pk), to_attr='main_images'))
     product = Product.objects.get(pk=pk)
+    images = product.images.all()
     prd_view = ProductView.objects.all()
     profile = Profile.objects.all()
     ctx = {
         "product": product,
         "products": products,
         "prd_view": prd_view,
-        "profiles": profile
+        "profiles": profile,
+        "images": images
     }
     return render(request, 'detail.html', ctx)
 

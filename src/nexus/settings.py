@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'main',
     'category',
     'user',
-    'product'
+    'product',
+    'blog'
 ]
 
 MIDDLEWARE = [
@@ -86,6 +87,9 @@ DATABASES = {
         "PASSWORD": "nexus_root",
         "HOST": "127.0.0.1",
         "PORT": "5432",
+        'TEST': {
+            'MIRROR': 'default',
+        },
     }
 }
 
