@@ -1,18 +1,18 @@
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import CategorySerializer
+from .serializers import ProductSerializer
 from rest_framework.decorators import api_view
-from category.models import Category
+from product.models import Product
 
 @api_view(['GET','POST'])
-def get_list_ctg(request):
+def get_list_prd(request):
     if request.method == "GET":
-        categories = Category.objects.all()
-        result = CategorySerializer(categories, many=True)
+        products = Product.objects.all()
+        result = ProductSerializer(products, many=True)
         print(result.data)
         return Response({"data": result.data})
     elif request.method == "POST":
-        serializer = CategorySerializer(data=request.data)
+        serializer = ProductSerializer(data=request.data)
         print(serializer, serializer.is_valid())
         if serializer.is_valid():
             result = serializer.save()
@@ -20,18 +20,18 @@ def get_list_ctg(request):
             return Response({"data": "success"}, status=status.HTTP_201_CREATED)
 
 @api_view(['GET','PUT','DELETE'])
-def detail_ctg(request, pk):
+def detail_prd(request, pk):
     try:
-        category = Category.objects.get(pk=pk)
-    except Category.DoesNotExist:
+        product = Product.objects.get(pk=pk)
+    except Product.DoesNotExist:
         return Response({"error": "Could not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "GET":
-        serializer = CategorySerializer(category)
+        serializer = ProductSerializer(product)
         return Response(serializer.data)
 
     elif request.method == "PUT":
-        serializer = CategorySerializer(category, data=request.data)
+        serializer = ProductSerializer(product, data=request.data)
         print(serializer.is_valid(), serializer)
         if serializer.is_valid():
             serializer.save()
@@ -40,5 +40,5 @@ def detail_ctg(request, pk):
         return Response({"error": "Could not edit"}, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == "DELETE":
-        category.delete()
+        product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
