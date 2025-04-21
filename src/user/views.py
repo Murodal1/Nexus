@@ -17,7 +17,7 @@ def login_view(request):
     form = LoginForm()
     ctx = {
         "form": form
-    }
+    }  
     return render(request, 'login.html', ctx)
 
 def register(request):

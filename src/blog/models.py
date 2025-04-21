@@ -18,6 +18,7 @@ class Comment(models.Model):
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
+    created_date = models.DateTimeField(auto_now=True, editable=False)
 
     def __str__(self):
         return "%s %s" % (self.blog.id, self.text)
