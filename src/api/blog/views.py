@@ -3,6 +3,8 @@ from rest_framework import status
 from .serializers import BlogSerializer
 from rest_framework.decorators import api_view
 from blog.models import Blog
+from rest_framework.generics import GenericAPIView
+from rest_framework import mixins
 
 @api_view(['GET','POST'])
 def get_list_blog(request):
@@ -42,3 +44,65 @@ def detail_blog(request, pk):
     elif request.method == "DELETE":
         blog.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class BlogGenericAPIView(GenericAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+
+    def get(self, request):
+        books = self.get_queryset()
+        serializer = self.get_serializer(books, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class BlogGenericDetailAPIView(GenericAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+    def get(self, request, *args, **kwargs):
+        blog = self.get_object()
+        serializer = self.get_serializer(blog)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        blog = self.get_object()
+        serializer = self.get_serializer(blog, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response({"Error":"request not valid"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        blog = self.get_object()
+        blog.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class BlogGenericAPIViewMixin(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class BlogGenericDetailAPIViewMixin(GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+    lookup_field = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request,*args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
