@@ -3,8 +3,10 @@ from rest_framework import status
 from .serializers import BlogSerializer
 from rest_framework.decorators import api_view
 from blog.models import Blog
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import mixins
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
 
 @api_view(['GET','POST'])
 def get_list_blog(request):
@@ -45,7 +47,40 @@ def detail_blog(request, pk):
         blog.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class FBVAPIBlog(APIView):
+    def get(self, request):
+        blog = Blog.objects.all()
+        result = BlogSerializer(blog, many=True)
+        return Response({"data": result.data})
 
+    def post(self, request):
+        serializer = BlogSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class FBVAPIBlogDetail(APIView):
+    def get(self, request, pk):
+        try:
+            blog = Blog.objects.get(pk=pk)
+        except Blog.DoesNotExist:
+            return Response({"Error": "Could not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = BlogSerializer(blog)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        blog = Blog.objects.get(pk=pk)
+        serializer = BlogSerializer(blog, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"Error": "Could not edit"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        blog = Blog.objects.get(pk=pk)
+        blog.delete()
+        return Response("Blog successfully deleted", status=status.HTTP_204_NO_CONTENT)
 
 class BlogGenericAPIView(GenericAPIView):
     queryset = Blog.objects.all()
@@ -106,3 +141,15 @@ class BlogGenericDetailAPIViewMixin(GenericAPIView, mixins.RetrieveModelMixin, m
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+class ConcreateAPIView(ListCreateAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+
+class ConcreateDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+
+class BlogViewSet(ModelViewSet):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
