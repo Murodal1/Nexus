@@ -4,6 +4,9 @@ from .serializers import CategorySerializer
 from rest_framework.decorators import api_view
 from category.models import Category
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework import mixins
+from rest_framework.viewsets import ModelViewSet
 
 @api_view(['GET','POST'])
 def get_list_ctg(request):
@@ -81,3 +84,75 @@ class CategoryDetailView(APIView):
         category = Category.objects.get(pk=pk)
         category.delete()
         return Response("Category successful deleted",status=status.HTTP_204_NO_CONTENT)
+
+class CategoryGenericAPIView(GenericAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def get(self, request):
+        books = self.get_queryset()
+        serializer = self.get_serializer(books, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class CategoryGenericDetailAPIView(GenericAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    def get(self, request, *args, **kwargs):
+        category = self.get_object()
+        serializer = self.get_serializer(category)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        category = self.get_object()
+        serializer = self.get_serializer(category, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response({"Error":"request not valid"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        category = self.get_object()
+        category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class CategoryGenericAPIViewMixin(GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class CategoryGenericDetailAPIViewMixin(GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    lookup_field = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request,*args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+class ConcreateAPIView(ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class ConcreateDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class CategoryViewSet(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
